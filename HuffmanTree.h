@@ -5,17 +5,17 @@
 #include <string.h>
 using namespace std;
 
-// ¹ş·òÂüÊ÷½áµã
+// å“ˆå¤«æ›¼æ ‘ç»“ç‚¹
 struct HuffNode
 {
-	unsigned char ch;  //×Ö½Ú·û
-	long count;  //×Ö½Ú³öÏÖÆµ¶È
-	int parent; //¸¸½Úµã
-	int lch;  //×óº¢×Ó
-	int rch;  //ÓÒº¢×Ó
-	char bits[256]; // ¹ş·òÂü±àÂë
+	unsigned char ch;  //å­—èŠ‚ç¬¦
+	long count;  //å­—èŠ‚å‡ºç°é¢‘åº¦
+	int parent; //çˆ¶èŠ‚ç‚¹
+	int lch;  //å·¦å­©å­
+	int rch;  //å³å­©å­
+	char bits[256]; // å“ˆå¤«æ›¼ç¼–ç 
 };
-//ÎÄ¼ş½á¹¹Ìå
+//æ–‡ä»¶ç»“æ„ä½“
 struct weijiang
 {
 	int sum;
@@ -27,31 +27,26 @@ int DuXuWenJian(HuffNode hufftree[],string InFile)
 	std::fstream infile;
 	unsigned char ch;
 	weijiang z[256] = { 0 };
-
-	for (int k = 0; k < 256; k++)
+	for (int k = 0; k < 256; k++)//åˆå§‹åŒ–
 		z[k].xunhao = k;
-
-	infile.open(InFile);
-	if (!infile)
+	infile.open(InFile); //æ‰“å¼€æ–‡ä»¶
+	if (!infile) 
 	{
-		std::cout << " ´ò¿ªÎÄ¼şÊ§°Ü " << std::endl;
-
+		std::cout << " æ‰“å¼€æ–‡ä»¶å¤±è´¥ " << std::endl
 	}
-
-	while (infile.get((char&)ch))
+	while (infile.get((char&)ch))//è·å–æ–‡ä»¶ä¿¡æ¯
 	{
-		for (int g = 0; g < 256; g++)
+		for (int g = 0; g < 256; g++) 
 		{
-			if (ch == g)
+			if (ch == g) //ç»Ÿè®¡å­—ç¬¦é¢‘åº¦
 				z[g].sum++;
 		}
 	}
-
-	for (int m = 0; m<256; m++)
+	for (int m = 0; m<256; m++)//å†’æ³¡æ’åº
 	{
 		for (int n = m + 1; n <= 255; n++)
 		{
-			if (z[n].sum <= z[m].sum)
+			if (z[n].sum <= z[m].sum)//é¢‘åº¦ä»å°åˆ°å¤§æ’åº
 			{
 				int temp1 = z[n].sum;
 				z[n].sum = z[m].sum;
@@ -60,26 +55,23 @@ int DuXuWenJian(HuffNode hufftree[],string InFile)
 				int temp2 = z[n].xunhao;
 				z[n].xunhao = z[m].xunhao;
 				z[m].xunhao = temp2;
-
 			}
 		}
-
 	}
-	for (int m = 0; m<256; m++)
+	for (int m = 0; m<256; m++)//å†’æ³¡æ’åº
 	{
 		for (int n = m + 1; n <= 255; n++)
 		{
-			if (z[n].sum <= z[m].sum)
+			if (z[n].sum <= z[m].sum)//åºå·æ’åº
 			{
 				int temp2 = z[n].xunhao;
 				z[n].xunhao = z[m].xunhao;
 				z[m].xunhao = temp2;
 			}
 		}
-
 	}
-	int d = 0;//ÓĞĞ§×Ö½Ú
-	for (int j = 0; j < 256; j++)
+	int d = 0;//æœ‰æ•ˆå­—èŠ‚
+	for (int j = 0; j < 256; j++)//å»æ‰é¢‘åº¦ä¸º0çš„å­—ç¬¦
 	{
 		if (z[j].sum != 0)
 		{
@@ -88,25 +80,25 @@ int DuXuWenJian(HuffNode hufftree[],string InFile)
 			d++;
 		}
 	}
-	infile.close();
-	return d;
+	infile.close();//å…³é—­æ–‡ä»¶
+	return d;//è¿”å›å­—ç¬¦ä¸ªæ•°
 }
 
-// Ñ¡Ôñ×îĞ¡ºÍ´ÎĞ¡µÄÁ½¸ö½áµã£¬½¨Á¢¹ş·òÂüÊ÷µ÷ÓÃ
+// é€‰æ‹©æœ€å°å’Œæ¬¡å°çš„ä¸¤ä¸ªç»“ç‚¹ï¼Œå»ºç«‹å“ˆå¤«æ›¼æ ‘è°ƒç”¨
 void select(HuffNode *huf_tree, int n, int *s1, int *s2)
 {
-	// ÕÒ×îĞ¡½áµã
+	// æ‰¾æœ€å°ç»“ç‚¹
 	unsigned int i;
 	unsigned long min = LONG_MAX;
 	for (i = 0; i < n; i++)
 		if (huf_tree[i].parent == -1 && huf_tree[i].count < min)
 		{
 			min = huf_tree[i].count;
-			*s1 = i;//¼ÇÂ¼ÏÂ±ê
+			*s1 = i;//è®°å½•ä¸‹æ ‡
 		}
-	huf_tree[*s1].parent = 1;   // ±ê¼Ç´Ë½áµãÒÑ±»Ñ¡ÖĞ
+	huf_tree[*s1].parent = 1;   // æ ‡è®°æ­¤ç»“ç‚¹å·²è¢«é€‰ä¸­
 
-	// ÕÒ´ÎĞ¡½áµã
+	// æ‰¾æ¬¡å°ç»“ç‚¹
 	min = LONG_MAX;
 	for (i = 0; i < n; i++)
 	{
@@ -118,46 +110,46 @@ void select(HuffNode *huf_tree, int n, int *s1, int *s2)
 	}
 }
 
-// ½¨Á¢¹ş·òÂüÊ÷
+// å»ºç«‹å“ˆå¤«æ›¼æ ‘
 void creat(HuffNode *huf_tree, int n)
 {
 	int i;
 	int s1, s2;
 	for (i = n; i < 2*n-1; ++i)
 	{
-		select(huf_tree, i, &s1, &s2);		// Ñ¡Ôñ×îĞ¡µÄÁ½¸ö½áµã
-		huf_tree[s1].parent = i;            //Ô­µãË«Ç×Îªi
+		select(huf_tree, i, &s1, &s2);		// é€‰æ‹©æœ€å°çš„ä¸¤ä¸ªç»“ç‚¹
+		huf_tree[s1].parent = i;            //åŸç‚¹åŒäº²ä¸ºi
 		huf_tree[s2].parent = i;           
-		huf_tree[i].lch = s1;               //ĞÂ½áµã×ó×ÓÊ÷ÊÇ×îĞ¡µÄs1
-		huf_tree[i].rch = s2;               //ĞÂ½áµãÓÒ×ÓÊ÷ÊÇ×îĞ¡s2
-		huf_tree[i].count = huf_tree[s1].count + huf_tree[s2].count;////ĞÂ½áµãµÄÈ¨Öµ
+		huf_tree[i].lch = s1;               //æ–°ç»“ç‚¹å·¦å­æ ‘æ˜¯æœ€å°çš„s1
+		huf_tree[i].rch = s2;               //æ–°ç»“ç‚¹å³å­æ ‘æ˜¯æœ€å°s2
+		huf_tree[i].count = huf_tree[s1].count + huf_tree[s2].count;////æ–°ç»“ç‚¹çš„æƒå€¼
 	}
 }
 
 
-// Éú³É¹ş·òÂü±àÂë
-void creat_hmcode(HuffNode *huf_tree, int n)//Éú³É¹ş·òÂü±àÂë
+// ç”Ÿæˆå“ˆå¤«æ›¼ç¼–ç 
+void creat_hmcode(HuffNode *huf_tree, int n)//ç”Ÿæˆå“ˆå¤«æ›¼ç¼–ç 
 {
 	int i;
 	int cur, next, index;
-	char code_tmp[256];		// Ôİ´æ±àÂë£¬×î¶à256¸öÒ¶×Ó£¬±àÂë³¤¶È²»³¬¶à255
+	char code_tmp[256];		// æš‚å­˜ç¼–ç ï¼Œæœ€å¤š256ä¸ªå¶å­ï¼Œç¼–ç é•¿åº¦ä¸è¶…å¤š255
 	code_tmp[255] = '\0';
 
 	for (i = 0; i < n; ++i)
 	{
-		index = 256 - 1;	// ±àÂëÁÙÊ±¿Õ¼ä³õÊ¼»¯
+		index = 256 - 1;	// ç¼–ç ä¸´æ—¶ç©ºé—´åˆå§‹åŒ–
 
-		// ´ÓÒ¶×ÓÏò¸ùÇó±àÂë
+		// ä»å¶å­å‘æ ¹æ±‚ç¼–ç 
 		for (cur = i, next = huf_tree[i].parent; next != -1; next = huf_tree[next].parent)
 		{
 			if (huf_tree[next].lch == cur)
-				code_tmp[--index] = '0';	// ×ó¡®0¡¯
+				code_tmp[--index] = '0';	// å·¦â€˜0â€™
 			else
-				code_tmp[--index] = '1';	// ÓÒ¡®1¡¯
+				code_tmp[--index] = '1';	// å³â€˜1â€™
 
 			cur = next;
 
 		}
-		strcpy(huf_tree[i].bits, &code_tmp[index]);     // ÕıÏò±£´æ±àÂëµ½Ê÷½áµãÏàÓ¦Óò indexÊÇµÚÒ»¸ö
+		strcpy(huf_tree[i].bits, &code_tmp[index]);     // æ­£å‘ä¿å­˜ç¼–ç åˆ°æ ‘ç»“ç‚¹ç›¸åº”åŸŸ indexæ˜¯ç¬¬ä¸€ä¸ª
 	}
 }
